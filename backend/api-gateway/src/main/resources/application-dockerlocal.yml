@@ -1,0 +1,47 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: api-gateway
+  cloud:
+    gateway:
+      globalcors:
+        add-to-simple-url-handler-mapping: true
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins:
+              - "http://ase-delivery-portal"
+              - "http://localhost"
+            allowedHeaders: "*"
+            allowedMethods: "*"
+            allow-credentials: true
+      routes:
+        - id: delivery-service
+          uri: "lb://delivery-service"
+          predicates:
+            - Path=/boxes/**,/deliveries/**
+        - id: user-service
+          uri: "lb://user-service"
+          predicates:
+            - Path=/auth/**,/users/**
+
+eureka:
+  instance:
+    prefer-ip-address: true
+  client:
+    service-url:
+      defaultZone: http://discovery-service:8761/eureka
+
+logging:
+  level:
+    reactor:
+      netty: INFO
+    org:
+      springframework:
+        web: INFO
+        cloud:
+          gateway:
+            globalcors:
+              corsConfigurations: DEBUG
+
