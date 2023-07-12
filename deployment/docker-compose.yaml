@@ -1,0 +1,72 @@
+
+services:
+  ######################## MONGO #############################
+  mongo:
+    restart: always
+    image: mongo:latest
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=aseAdmin
+      - MONGO_INITDB_ROOT_PASSWORD=test
+    ports:
+      - 27017:27017
+
+  ######################## DISCOVERY SERVICE #############################
+
+  discovery-service:
+    image: gitlab.lrz.de:5005/ase-22-23/team04/backend/discovery-service
+    ports:
+      - 8761:8761
+    depends_on:
+      - mongo
+
+  ######################## API GATEWAY #############################
+
+  api-gateway:
+    image: gitlab.lrz.de:5005/ase-22-23/team04/backend/api-gateway
+    ports:
+      - 8080:8080
+    depends_on:
+      - mongo
+      - discovery-service
+
+
+  ######################## USER SERVICE #############################
+
+  user-service:
+    image: gitlab.lrz.de:5005/ase-22-23/team04/backend/user-serivce
+    ports:
+      - 8081:8081
+    depends_on:
+      - mongo
+      - discovery-service
+
+  ######################## USER SERVICE #############################
+
+  delivery-service:
+    image: gitlab.lrz.de:5005/ase-22-23/team04/backend/delivery-service
+    ports:
+      - 8082:8082
+    depends_on:
+      - mongo
+      - discovery-service
+
+  ######################## USER SERVICE #############################
+
+  messaging-service:
+    image: gitlab.lrz.de:5005/ase-22-23/team04/backend/messaging-service
+    ports:
+      - 8083:8083
+    depends_on:
+      - mongo
+      - discovery-service
+
+  ######################## ASE DELIVERY PORTAL #############################
+
+  ase-delivery-portal:
+    image: gitlab.lrz.de:5005/ase-22-23/team04/frontend/ase-delivery-portal
+    ports:
+      - 80:80
+    stdin_open: true
+    tty: true
+    environment:
+      - REACT_APP_BACKEND_ENDPOINT=http://ase-delivery.sytes.net

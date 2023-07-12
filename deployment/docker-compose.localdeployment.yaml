@@ -1,0 +1,84 @@
+services:
+
+  ######################## MONGO #############################
+  mongo:
+    restart: always
+    image: mongo:latest
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=aseAdmin
+      - MONGO_INITDB_ROOT_PASSWORD=test
+    ports:
+      - 27017
+
+  ######################## DISCOVERY SERVICE #############################
+
+  discovery-service:
+    build:
+      context: ../discovery-service
+      dockerfile: ../discovery-service/dev.Dockerfile
+    ports:
+      - 8761
+    depends_on:
+      - mongo
+
+  ######################## API GATEWAY #############################
+
+  api-gateway:
+    build:
+      context: ../api-gateway
+      dockerfile: ../api-gateway/dev.Dockerfile
+    ports:
+      - 8080
+    depends_on:
+      - mongo
+      - discovery-service
+
+
+  ######################## USER SERVICE #############################
+
+  user-service:
+    build:
+      context: ../user-serivce
+      dockerfile: ../user-serivce/dev.Dockerfile
+    ports:
+      - 8081
+    depends_on:
+      - mongo
+      - discovery-service
+
+  ######################## USER SERVICE #############################
+
+  delivery-service:
+    build:
+      context: ../delivery-service
+      dockerfile: ../delivery-service/dev.Dockerfile
+    ports:
+      - 8082
+    depends_on:
+      - mongo
+      - discovery-service
+
+  ######################## USER SERVICE #############################
+
+  messaging-service:
+    build:
+      context: ../messaging-service
+      dockerfile: ../messaging-service/dev.Dockerfile
+    ports:
+      - 8083
+    depends_on:
+      - mongo
+      - discovery-service
+
+  ######################## ASE DELIVERY PORTAL #############################
+
+  ase-delivery-portal:
+    build:
+      context: ../ase-delivery-portal
+      dockerfile: dev.Dockerfile
+    ports:
+      - 80:80
+    stdin_open: true
+    tty: true
+    environment:
+      - REACT_APP_BACKEND_ENDPOINT_LOCAL_DEPLOYMENT=http://localhost/gateway
