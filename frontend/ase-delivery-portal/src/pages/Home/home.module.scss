@@ -1,0 +1,32 @@
+$overlayHeight: 80px;
+
+.header {
+    position: relative;
+
+    .title {
+        margin-top: -$overlayHeight;
+        position: absolute;
+        width: 100%;
+        height: $overlayHeight;
+        z-index: 10;
+        background-color: rgba(51, 32, 2, 0.25);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 2.6em;
+        font-weight: bold;
+    }
+}
+
+.carouselImage {
+    height: 300px;
+    object-fit: cover;
+}
+
+.deliveryTracking {
+    border-radius: 20px;
+    background-color: #f5bb58;
+    padding: 20px;
+}
+
