@@ -1,0 +1,31 @@
+server:
+  port: 8081
+
+spring:
+  application:
+    name: user-service
+  data:
+    mongodb:
+      # Configure database location
+      host: mongo
+      port: 27017
+      database: user-service
+      # Configure credential
+      username: aseAdmin
+      password: test
+      authentication-database: admin
+      # Configure Database Operation,
+      # allow creating index automatically from the code auto-index-creation: true
+      #enable the usage of Spring Data Mongo Repository
+      repositories:
+        enabled: true
+      auto-index-creation: true
+
+eureka:
+  instance:
+    preferIpAddress: true
+  client:
+    service-url:
+      defaultZone: http://discovery-service:8761/eureka
+
+

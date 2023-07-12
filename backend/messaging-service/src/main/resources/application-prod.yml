@@ -1,0 +1,28 @@
+server:
+  port: 8083
+
+delivery:
+  track-url: http://ase-delivery.sytes.net/deliveries/delivery/
+
+spring:
+  application:
+    name: messaging-service
+  mail:
+    protocol: smtp
+    host: smtp.gmail.com
+    port: 587
+    username: delivery.ase04@gmail.com
+    password: vqhhchpkpunfhgpd
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+eureka:
+  instance:
+    prefer-ip-address: true
+  client:
+    service-url:
+      defaultZone: http://discovery-service:8761/eureka

@@ -1,0 +1,44 @@
+image: docker:20.10.16
+
+services:
+  - docker:20.10.16-dind
+
+# Stages, which define when to run the jobs. For example, stages that run tests after stages that compile the code.
+stages:
+  - Build
+  - Test
+  - Deploy
+
+
+# build job in Build stage
+build:
+  image: openjdk:17-alpine
+  stage: Build
+  script:
+    - ./gradlew bootJar
+  # The paths keyword determines which files to add to the job artifacts. All paths to files and directories are relative to the repository where the job was created.
+  artifacts:
+    paths:
+      - build/libs/*.jar
+    expire_in: 1 week
+
+# test job in Test stage
+test:
+  image: openjdk:17-alpine
+  stage: Test
+  needs:
+    - build
+  script:
+    - ./gradlew check
+
+deploy:
+  stage: Deploy
+  before_script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+
+  script:
+    - docker build -t gitlab.lrz.de:5005/ase-22-23/team04/backend/delivery-service .
+    - docker push gitlab.lrz.de:5005/ase-22-23/team04/backend/delivery-service
+  only:
+    refs:
+      - main
